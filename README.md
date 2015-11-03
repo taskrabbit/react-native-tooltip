@@ -24,7 +24,6 @@ var {
   View,
 } = React;
 
-var ToolTipMenu = require('NativeModules').ToolTipMenu;
 var ToolTipText = require('react-native-tooltip');
 
 var tooltip = React.createClass({
@@ -33,23 +32,19 @@ var tooltip = React.createClass({
       input: 'chirag',
     }
   },
-  handleChange: function(event) {
-    this.setState({input: event.nativeEvent.text});
-  },
-  handleFocus: function(change) {
-    ToolTipMenu.show(React.findNodeHandle(this.refs.input), ['x', 'z']);
-  },
   render: function() {
     return (
       <View style={styles.container}>
         <View style={styles.textinputContainer}>
           <ToolTipText
-            suppressHighlighting={true}
-            onChange={this.handleChange}
-            onPress={this.handleFocus}
-            ref={'input'}
+            actions={[
+              {text: 'x', onPress: () => { this.setState({input: 'x pressed'}) }},
+              {text: 'y', onPress: () => { this.setState({input: 'y pressed'}) }}
+            ]}
             style={styles.textinput}
-          >{this.state.input}</ToolTipText>
+          >
+            {this.state.input}
+          </ToolTipText>
         </View>
       </View>
     );

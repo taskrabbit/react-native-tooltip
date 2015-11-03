@@ -1,28 +1,71 @@
 'use strict';
 
-var React = require('react-native');
-var {
+import React from 'react-native';
+const {
   Text,
   requireNativeComponent,
 } = React;
 
-var ViewClass = React.createClass({
+const ToolTipMenu = React.NativeModules.ToolTipMenu;
 
-  _onChange: function(event: Event) {
-    this.props.onChange && this.props.onChange(event);
-  },
+const RCTToolTipText = requireNativeComponent('RCTToolTipText', null);
 
-  render: function() {
-    //don't pass onChange to text.
-    var { onChange, ...other } = this.props;
+const propTypes = {
+  actions: React.PropTypes.arrayOf(React.PropTypes.shape({
+    text: React.PropTypes.string.isRequired,
+    onPress: React.PropTypes.number,
+  })),
+};
+
+class ToolTipText extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handleToolTipTextChange = this.handleToolTipTextChange.bind(this);
+    this.handleTextPress         = this.handleTextPress.bind(this);
+  }
+
+  getOptionTexts() {
+    return this.props.actions.map((option) => option.text);
+  }
+
+  // Assuming there is no actions with the same text
+  getCallback(optionText) {
+    const selectedOption = this.props.actions.find((option) => option.text === optionText);
+
+    if (selectedOption) {
+      return selectedOption.onPress;
+    }
+
+    return null;
+  }
+
+  handleTextPress() {
+    ToolTipMenu.show(React.findNodeHandle(this.refs.toolTipText), this.getOptionTexts());
+  }
+
+  handleToolTipTextChange(event) {
+    const callback = this.getCallback(event.nativeEvent.text);
+
+    if (callback) {
+      callback(event);
+    }
+  }
+
+  render() {
+    const {actions, ...textProps} = this.props;
+
     return (
-      <RCTToolTipText onChange={this._onChange}>
-        <Text {...other } />
+      <RCTToolTipText ref='toolTipText' onChange={this.handleToolTipTextChange}>
+        <Text
+          {...textProps}
+          onPress={this.handleTextPress}
+        />
       </RCTToolTipText>
     );
   }
-});
+}
 
-var RCTToolTipText = requireNativeComponent('RCTToolTipText', null);
+ToolTipText.propTypes = propTypes;
 
-module.exports = ViewClass;
+export default ToolTipText;
