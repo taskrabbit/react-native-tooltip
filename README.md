@@ -4,7 +4,7 @@ A react-native component from displaying tooltip. Uses UIMenuController.
 
 ### Add it to your project
 
-1. Run `npm install react-native-tooltip --save`
+1. Edit your package.json and add `"react-native-tooltip": "git://github.com/taskrabbit/react-native-tooltip.git"`
 2. Open your project in XCode, right click on `Libraries` and click `Add
    Files to "Your Project Name"` [(Screenshot)](http://url.brentvatne.ca/jQp8) then [(Screenshot)](http://url.brentvatne.ca/1gqUD).
 3. Add `libRNToolTipMenu.a` to `Build Phases -> Link Binary With Libraries`
@@ -18,13 +18,11 @@ var React = require('react-native');
 var {
   AppRegistry,
   StyleSheet,
-  Text,
-  TouchableHighlight,
   PixelRatio,
   View,
 } = React;
 
-var ToolTipText = require('react-native-tooltip');
+var ToolTip = require('react-native-tooltip');
 
 var tooltip = React.createClass({
   getInitialState: function() {
@@ -36,15 +34,17 @@ var tooltip = React.createClass({
     return (
       <View style={styles.container}>
         <View style={styles.textinputContainer}>
-          <ToolTipText
+          <ToolTip
             actions={[
               {text: 'x', onPress: () => { this.setState({input: 'x pressed'}) }},
               {text: 'y', onPress: () => { this.setState({input: 'y pressed'}) }}
             ]}
             style={styles.textinput}
           >
-            {this.state.input}
-          </ToolTipText>
+            <Text>
+              {this.state.input}
+            </Text>
+          </ToolTip>
         </View>
       </View>
     );

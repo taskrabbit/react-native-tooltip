@@ -2,8 +2,9 @@
 
 import React from 'react-native';
 const {
-  Text,
   requireNativeComponent,
+  TouchableHighlight,
+  View,
 } = React;
 
 const ToolTipMenu = React.NativeModules.ToolTipMenu;
@@ -13,8 +14,10 @@ const RCTToolTipText = requireNativeComponent('RCTToolTipText', null);
 const propTypes = {
   actions: React.PropTypes.arrayOf(React.PropTypes.shape({
     text: React.PropTypes.string.isRequired,
-    onPress: React.PropTypes.number,
+    onPress: React.PropTypes.func,
   })),
+  longPress: React.PropTypes.bool,
+  ...TouchableHighlight.propTypes,
 };
 
 class ToolTipText extends React.Component {
@@ -40,6 +43,20 @@ class ToolTipText extends React.Component {
     return null;
   }
 
+  getTouchableHighlightProps() {
+    let props = {};
+
+    Object.keys(TouchableHighlight.propTypes).forEach((key) => props[key] = this.props[key]);
+
+    if (this.props.longPress) {
+      props.onLongPress = this.handleTextPress;
+    } else {
+      props.onPress = this.handleTextPress;
+    }
+
+    return props;
+  }
+
   handleTextPress() {
     ToolTipMenu.show(React.findNodeHandle(this.refs.toolTipText), this.getOptionTexts());
   }
@@ -53,14 +70,15 @@ class ToolTipText extends React.Component {
   }
 
   render() {
-    const {actions, ...textProps} = this.props;
-
     return (
       <RCTToolTipText ref='toolTipText' onChange={this.handleToolTipTextChange}>
-        <Text
-          {...textProps}
-          onPress={this.handleTextPress}
-        />
+        <TouchableHighlight
+          {...this.getTouchableHighlightProps()}
+        >
+          <View>
+            {this.props.children}
+          </View>
+        </TouchableHighlight>
       </RCTToolTipText>
     );
   }
