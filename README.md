@@ -11,6 +11,22 @@ A react-native component from displaying tooltip. Uses UIMenuController.
    [(Screenshot)](http://url.brentvatne.ca/17Xfe).
 4. Whenever you want to use it within React code now you can: `var ToolTipText = require('react-native-tooltip');`
 
+### Props
+
+- `actions`: Array of actions `[{text: 'Copy', onPress: () => Clipboard.set(this.someValue) }]`
+- `longPress`: Boolean indicating if the tooltip should be showing on longPress, false by default.
+
+#### Props from TouchableHighlight.propTypes
+
+- `activeOpacity`
+- `onHideUnderlay`
+- `onShowUnderlay`
+- `style`
+- `underlayColor`
+
+You can see the list on the react native [website](https://facebook.github.io/react-native/docs/touchablehighlight.html#content)
+
+``
 
 ## Example
 ```javascript
@@ -39,6 +55,8 @@ var tooltip = React.createClass({
               {text: 'x', onPress: () => { this.setState({input: 'x pressed'}) }},
               {text: 'y', onPress: () => { this.setState({input: 'y pressed'}) }}
             ]}
+            underlayColor={cssVar('trGray10')}
+            longPress={true}
             style={styles.textinput}
           >
             <Text>
