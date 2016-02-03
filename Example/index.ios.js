@@ -5,7 +5,7 @@
 'use strict';
 
 import React from 'react-native';
-import ToolTip from 'react-native-tooltip';
+import { ToolTip } from 'react-native-tooltip';
 
 const {
   AppRegistry,
