@@ -1,13 +1,15 @@
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
+var ReactNative = require('react-native');
 var {
   requireNativeComponent,
   TouchableHighlight,
   View,
-} = React;
+  NativeModules,
+} = ReactNative;
 
-var ToolTipMenu = React.NativeModules.ToolTipMenu;
+var ToolTipMenu = NativeModules.ToolTipMenu;
 
 var RCTToolTipText = requireNativeComponent('RCTToolTipText', null);
 
@@ -22,7 +24,7 @@ var propTypes = {
 
 var ViewClass = React.createClass({
   showMenu: function() {
-    ToolTipMenu.show(React.findNodeHandle(this.refs.toolTipText), this.getOptionTexts());
+    ToolTipMenu.show(ReactNative.findNodeHandle(this.refs.toolTipText), this.getOptionTexts());
   },
 
   getOptionTexts: function() {
