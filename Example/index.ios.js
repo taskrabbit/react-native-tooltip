@@ -4,7 +4,8 @@
  */
 'use strict';
 
-import React from 'react-native';
+import ReactNative from 'react-native';
+import React from 'react';
 import ToolTip from 'react-native-tooltip';
 
 const {
@@ -13,7 +14,7 @@ const {
   Text,
   View,
   AlertIOS,
-} = React;
+} = ReactNative;
 
 const styles = StyleSheet.create({
   container: {
@@ -44,18 +45,45 @@ class Example extends React.Component {
   }
 
   render() {
+    const actions = [
+      {text: 'Copy', onPress: this.handleCopyPress },
+      {text: 'Other', onPress: this.handleOtherPress }
+    ];
     return (
       <View style={{flex: 1, justifyContent: 'center'}}>
         <ToolTip
-          actions={[
-            {text: 'Copy', onPress: this.handleCopyPress },
-            {text: 'Other', onPress: this.handleOtherPress }
-          ]}
+          actions={actions}
           underlayColor={'blue'}
           style={styles.selectedName}
         >
           <Text style={styles.welcome}>
             Press Here.
+          </Text>
+        </ToolTip>
+
+        <ToolTip
+          arrowDirection="up"
+          actions={actions}
+        >
+          <Text style={styles.welcome}>
+            Up
+          </Text>
+        </ToolTip>
+        <ToolTip
+          arrowDirection="left"
+          actions={actions}
+        >
+          <Text style={styles.welcome}>
+            Left
+          </Text>
+        </ToolTip>
+        <ToolTip
+          arrowDirection="right"
+          underlayColor='transparent'
+          actions={actions}
+        >
+          <Text style={styles.welcome}>
+            Right
           </Text>
         </ToolTip>
       </View>
