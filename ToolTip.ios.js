@@ -1,89 +1,108 @@
-'use strict';
+"use strict";
 
-import React from 'react-native';
-const {
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
+import {
   requireNativeComponent,
   TouchableHighlight,
   View,
-} = React;
+  NativeModules,
+  findNodeHandle
+} from "react-native";
 
-const ToolTipMenu = React.NativeModules.ToolTipMenu;
+const ToolTipMenu = NativeModules.ToolTipMenu;
+const RCTToolTipText = requireNativeComponent("RCTToolTipText", null);
 
-const RCTToolTipText = requireNativeComponent('RCTToolTipText', null);
+export default class ToolTip extends PureComponent {
+  static propTypes = {
+    actions: PropTypes.arrayOf(
+      PropTypes.shape({
+        text: PropTypes.string.isRequired,
+        onPress: PropTypes.func
+      })
+    ),
+    arrowDirection: PropTypes.oneOf(["up", "down", "left", "right", "default"]),
+    longPress: PropTypes.bool,
+    onHide: PropTypes.func,
+    onShow: PropTypes.func,
+    ...TouchableHighlight.propTypes
+  };
 
-const propTypes = {
-  actions: React.PropTypes.arrayOf(React.PropTypes.shape({
-    text: React.PropTypes.string.isRequired,
-    onPress: React.PropTypes.func,
-  })),
-  longPress: React.PropTypes.bool,
-  ...TouchableHighlight.propTypes,
-};
+  static defaultProps = {
+    arrowDirection: "default",
+    onHide: () => true,
+    onShow: () => true
+  };
 
-class ToolTipText extends React.Component {
-  constructor(props) {
-    super(props);
+  showMenu = () => {
+    ToolTipMenu.show(
+      findNodeHandle(this.refs.toolTipText),
+      this.getOptionTexts(),
+      this.props.arrowDirection
+    );
+    this.props.onShow();
+  };
 
-    this.handleToolTipTextChange = this.handleToolTipTextChange.bind(this);
-    this.handleTextPress         = this.handleTextPress.bind(this);
-  }
+  hideMenu = () => {
+    ToolTipMenu.hide();
+    this.props.onHide();
+  };
 
-  getOptionTexts() {
-    return this.props.actions.map((option) => option.text);
-  }
+  getOptionTexts = () => {
+    return this.props.actions.map(option => option.text);
+  };
 
   // Assuming there is no actions with the same text
-  getCallback(optionText) {
-    const selectedOption = this.props.actions.find((option) => option.text === optionText);
+  getCallback = optionText => {
+    const selectedOption = this.props.actions.find(
+      option => option.text === optionText
+    );
 
     if (selectedOption) {
       return selectedOption.onPress;
     }
 
     return null;
-  }
+  };
 
-  getTouchableHighlightProps() {
-    let props = {};
+  getTouchableHighlightProps = () => {
+    const props = {};
 
-    Object.keys(TouchableHighlight.propTypes).forEach((key) => props[key] = this.props[key]);
+    Object.keys(TouchableHighlight.propTypes).forEach(
+      key => (props[key] = this.props[key])
+    );
 
     if (this.props.longPress) {
-      props.onLongPress = this.handleTextPress;
+      props.onLongPress = this.showMenu;
     } else {
-      props.onPress = this.handleTextPress;
+      props.onPress = this.showMenu;
     }
 
     return props;
-  }
+  };
 
-  handleTextPress() {
-    ToolTipMenu.show(React.findNodeHandle(this.refs.toolTipText), this.getOptionTexts());
-  }
-
-  handleToolTipTextChange(event) {
+  handleToolTipTextChange = event => {
     const callback = this.getCallback(event.nativeEvent.text);
-
     if (callback) {
       callback(event);
     }
-  }
+  };
+
+  handleBlurToolTip = () => {
+    this.hideMenu();
+  };
 
   render() {
     return (
-      <RCTToolTipText ref='toolTipText' onChange={this.handleToolTipTextChange}>
-        <TouchableHighlight
-          {...this.getTouchableHighlightProps()}
-        >
-          <View>
-            {this.props.children}
-          </View>
+      <RCTToolTipText
+        ref="toolTipText"
+        onChange={this.handleToolTipTextChange}
+        onBlur={this.handleBlurToolTip}
+      >
+        <TouchableHighlight {...this.getTouchableHighlightProps()}>
+          <View>{this.props.children}</View>
         </TouchableHighlight>
       </RCTToolTipText>
     );
   }
 }
-
-ToolTipText.propTypes = propTypes;
-
-export default ToolTipText;

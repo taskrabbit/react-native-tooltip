@@ -1,6 +1,6 @@
 #import "RCTToolTipText.h"
-#import "RCTEventDispatcher.h"
-#import "UIView+React.h"
+#import <React/RCTEventDispatcher.h>
+#import <React/UIView+React.h>
 
 @implementation RCTToolTipText
 {
@@ -32,6 +32,16 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                                             text:text
                                             key:nil
                                       eventCount:_nativeEventCount];
+}
+
+- (void)didHideMenu:(NSNotification *)notification {
+    _nativeEventCount++;
+    [_eventDispatcher sendTextEventWithType:RCTTextEventTypeBlur
+                                   reactTag:self.reactTag
+                                       text:nil
+                                        key:nil
+                                 eventCount:_nativeEventCount];
+
 }
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {

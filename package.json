@@ -1,6 +1,6 @@
 {
   "name": "react-native-tooltip",
-  "version": "3.1.0",
+  "version": "5.2.0",
   "description": "A react-native wrapper for showing tooltips",
   "main": "ToolTip.ios.js",
   "author": {
@@ -8,6 +8,7 @@
     "email": "jain_chirag04@yahoo.com",
     "url": "http://chiragjain.tumblr.com"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git@github.com:chirag04/react-native-tooltip.git"
